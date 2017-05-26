@@ -4,45 +4,18 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="//d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/javascripts/instructor_circles.js"></script>
 
   </head>
   <body>
-    <h1> Instructors </h1>
-    <h3><span id="name"></span><span id="reviews"></span>  </h3>
-    <h4 id="otherinfo"></h4>
+    <div style="height:30px">
+      <h1> Instructors </h1>
+      <h3><span id="name"></span><span id="reviews"></span></h3>
+      <h4 id="otherinfo"></h4>
+      <h4 id="overall"></h4>
+  </div>
   <script>
-width = screen.width;
-height = screen.height/1.5;
- var svgContainer = d3.select("body").append("svg")
-                                     .attr("width", width)
-                                     .attr("height", height)
-                                     .attr('stroke','black')
- var circles = svgContainer.selectAll("circle")
-                           .data(<%- JSON.stringify(instructors) %>)
-                           .enter()
-                         .append("circle")
-
-var circleAttributes = circles
-                      .attr("cx", function (d) { return 200+Math.random()*1000; })
-                      .attr("cy", function (d) { return 200+Math.random()*300; })
-                      .attr("r", function (d) { return d.reviews; })
-                      .style("fill", function(d) {
-                         var returnColor;
-                         var avg = (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching))/4;
-                       if (avg < 2) { returnColor = "red";
-                     } else if (avg < 4) { returnColor = "orange";
-                   } else  { returnColor = "green"; }
-                         return returnColor;
-                       })
-                       .on("mouseover", function() {
-                         var data = d3.select(this)[0][0].__data__;
-                         document.getElementById('name').innerHTML=data.name+': ';
-                         document.getElementById('reviews').innerHTML=data.reviews+' Reviews';
-                         document.getElementById('otherinfo').innerHTML="Content: "+data.content+" Grading: "+data.grading+" Workload: "+data.workload+" Teaching: "+data.teaching;
-                        })
-                      .on('click',function() {
-                        var data = d3.select(this)[0][0].__data__;
-                        window.location.href='instructor?id='+data.instructorid;
-                      })
-
-</script>
+  makeInstructorCircles(<%- JSON.stringify(instructors) %>);
+  </script>
+</body>
+</html>
