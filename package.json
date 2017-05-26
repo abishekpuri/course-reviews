@@ -12,7 +12,8 @@
     "ejs": "~2.5.6",
     "express": "~4.15.2",
     "morgan": "~1.8.1",
-    "serve-favicon": "~2.4.2",
-    "pg-promise": "~5.7.1"
+    "pg-promise": "~5.7.1",
+    "rangeslider.js": "^2.3.0",
+    "serve-favicon": "~2.4.2"
   }
 }

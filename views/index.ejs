@@ -4,18 +4,27 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/rangeslider.min.js"></script>
     <script type="text/javascript" src="/javascripts/instructor_circles.js"></script>
 
   </head>
   <body>
-    <div style="height:30px">
+    <div id="circles" style="overflow-y:scroll">
+    </div>
+    <div style="height:30px;width:200px;display:inline-block">
       <h1> Instructors </h1>
       <h3><span id="name"></span><span id="reviews"></span></h3>
       <h4 id="otherinfo"></h4>
       <h4 id="overall"></h4>
   </div>
+  <div style="height:300px;width:600px;display:inline-block;overflow:scroll">
+    <ol id="content">
+    </ol>
+  </div>
   <script>
-  makeInstructorCircles(<%- JSON.stringify(instructors) %>);
+  $('input[type="range"]').rangeslider();
+  makeInstructorCircles(<%- JSON.stringify(instructors) %>,1,5);
   </script>
 </body>
 </html>

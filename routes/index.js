@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   "round(avg(ratingteaching)::numeric,2) AS teaching,round(avg(ratinggrading)::numeric,2) AS grading," +
   "round(avg(ratingworkload)::numeric,2) AS workload,count(reviewid) AS reviews " +
   "from review,instructor where review.instructorid = instructor.id group by instructorid,name) AS a " +
-  "where instructorid > 0")
+  "where instructorid > 0 order by reviews DESC")
          .then(function(result) {
            res.render('index',{'title': 'Overall Instructor Info','instructors':result})
          }).catch(function(error) {
