@@ -1,17 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var pgp = require('pg-promise')();
-
-var db = pgp(process.env.DATABASE_URL || 'postgres://abishekpuri@localhost/course-reviews');
+var db = require('../public/javascripts/db.js')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  db.any('SELECT name,id FROM instructor where id > 0')
-  .then(function(result) {
-    res.render('index',{'title': 'All Instructors','instructors':result})
-  }).catch(function(error) {
-    res.send("ERROR: " + error);
-  });
+  db.any("select * from (select name,instructorid,round(avg(ratingcontent)::numeric,2) AS content," +
+  "round(avg(ratingteaching)::numeric,2) AS teaching,round(avg(ratinggrading)::numeric,2) AS grading," +
+  "round(avg(ratingworkload)::numeric,2) AS workload,count(reviewid) AS reviews " +
+  "from review,instructor where review.instructorid = instructor.id group by instructorid,name) AS a " +
+  "where instructorid > 0")
+         .then(function(result) {
+           res.render('index',{'title': 'Overall Instructor Info','instructors':result})
+         }).catch(function(error) {
+           res.send("ERROR: " + error);
+         });
 });
 
 module.exports = router;
