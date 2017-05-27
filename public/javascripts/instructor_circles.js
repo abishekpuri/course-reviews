@@ -13,6 +13,7 @@ function makeInstructorCircles(instructors) {
                                        .attr("width", width)
                                        .attr("height", height)
                                        .attr('stroke','black')
+                                       .attr('stroke-width','1px')
    var circles = svgContainer.selectAll("circle")
                              .data(instructors)
                              .enter()
@@ -169,4 +170,32 @@ function getworkload() {
         "<br>"+result[i].commentworkload+"</li>");
       }
     });
+}
+function byname() {
+  d3.select('#circles').selectAll('circle').attr('stroke-width','1px')
+  $.post('/instructor/byname', {
+    name: $('#nameinput').val()
+  },function(result) {
+    d = result;
+    if(gl_averagetype == 1) {
+      var avg = (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching))/4;
+    }
+    else {
+      avg = (10*4.066 + (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching)))/14
+    }
+    document.getElementById('name').innerHTML=d.name+': <br>';
+    document.getElementById('id').innerHTML=d.instructorid;
+    $('#id').hide();
+    document.getElementById('reviews').innerHTML=d.reviews+' Reviews';
+    document.getElementById('otherinfo').innerHTML="Content: "+d.content+"<br> Grading: "+d.grading+"<br> Workload: "+d.workload+"<br> Teaching: "+d.teaching;
+    document.getElementById('overall').innerHTML="Overall Average: "+avg.toPrecision(5);
+  })
+  position = 0;
+  position = d3.select('#circles').selectAll('circle')
+      .filter(function(d) { return d.name ==$('#nameinput').val()})
+    .attr('stroke-width','10px')
+    .attr('cx') - 700
+
+     $('#circles').animate( { scrollLeft: position }, 1000);
+    //$("#circles").scrollLeft(position);
 }
