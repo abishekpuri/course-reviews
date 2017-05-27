@@ -95,9 +95,15 @@ function changeexponent() {
     makeInstructorCircles(result);
   });
 }
-function getcontent() {
+function getcontent(a="") {
+  value = 0;
+  if(a=="") {
+    value = $("#id").text();
+  } else {
+    value = a;
+  }
   $.post('/instructor/content',{
-    'id': $("#id").text()},
+    'id': value},
     function(result) {
       $("#content").empty();
       if($("#banner").length) {
@@ -195,7 +201,7 @@ function byname() {
       .filter(function(d) { return d.name ==$('#nameinput').val()})
     .attr('stroke-width','10px')
     .attr('cx') - 700
-
-     $('#circles').animate( { scrollLeft: position }, 1000);
-    //$("#circles").scrollLeft(position);
+getcontent(JSON.stringify(d3.select('#circles').selectAll('circle')
+    .filter(function(d) { return d.name ==$('#nameinput').val()})[0][0].__data__.instructorid));
+    $('#circles').animate( { scrollLeft: position }, 1000);
 }
