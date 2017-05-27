@@ -1,10 +1,10 @@
 var gl_exponent = 2;
 var gl_averagetype = 1;
 var gl_order = 'reviews';
+var gl_size = 0;
 function makeInstructorCircles(instructors) {
   width = screen.width*100;
   height = screen.height/5;
-  console.log(gl_exponent);
   var linearScale = d3.scale.pow()
           .exponent(gl_exponent)
           .domain([0, 5])
@@ -17,7 +17,7 @@ function makeInstructorCircles(instructors) {
                              .data(instructors)
                              .enter()
                            .append("circle")
-  currentX = 20;
+  currentX = 70;
   prevradius = 0;
   currentY = screen.height/10;
   var circleAttributes = circles
@@ -64,9 +64,21 @@ function makeInstructorCircles(instructors) {
 function changeorder(averagetype,exponent,order) {
   gl_order = order;
   d3.select("svg").remove();
-  $.post('/changeorder',{
-    'order': gl_order
+  $.post('/instructor/adjustinput',{
+    'order': gl_order,
+    'size': gl_size
   },function(result) {
+    makeInstructorCircles(result);
+  });
+}
+
+function limitsize() {
+  d3.select("svg").remove();
+  gl_size = parseInt($('#size').val());
+  $.post('/instructor/adjustinput', {
+    'order': gl_order,
+    'size': gl_size
+  }, function(result) {
     makeInstructorCircles(result);
   });
 }
@@ -75,8 +87,9 @@ function changeexponent() {
   d3.select("svg").remove();
   console.log($("#exponent").val());
   gl_exponent = parseInt($("#exponent").val());
-  $.post('/changeorder',{
-    'order': gl_order
+  $.post('/instructor/adjustinput',{
+    'order': gl_order,
+    'size' : gl_size
   },function(result) {
     makeInstructorCircles(result);
   });
