@@ -11,6 +11,15 @@
   </head>
   <body>
     <h1> HKUST Professor Reviews </h1>
+    <div style="height:15px;display:inline-block">
+    <button onclick="changeorder(1,2,'grading')"> Sort By Grading </button>
+    <button onclick="changeorder(1,2,'teaching')"> Sort By Teaching </button>
+    <button onclick="changeorder(1,2,'content')"> Sort By Content </button>
+    <button onclick="changeorder(1,2,'workload')"> Sort By Workload </button>
+    <button onclick="changeorder(1,2,'reviews')"> Sort By # Reviews </button>
+    <button onclick="changeexponent()"> Change Exponent </button>
+    <input type='text' id='exponent'/>
+  </div>
     <div id="circles" style="overflow-y:scroll">
     </div>
     <div style="height:30px;width:200px;display:inline-block">

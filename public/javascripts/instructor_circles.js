@@ -1,9 +1,12 @@
-
-function makeInstructorCircles(instructors,averagetype,exp) {
+var gl_exponent = 2;
+var gl_averagetype = 1;
+var gl_order = 'reviews';
+function makeInstructorCircles(instructors) {
   width = screen.width*100;
   height = screen.height/5;
+  console.log(gl_exponent);
   var linearScale = d3.scale.pow()
-          .exponent(exp)
+          .exponent(gl_exponent)
           .domain([0, 5])
           .range(["red", "green"]);
    var svgContainer = d3.select("#circles").append("svg")
@@ -25,7 +28,7 @@ function makeInstructorCircles(instructors,averagetype,exp) {
                         .attr("r", function (d) { return d.reviews; })
                         .style("fill", function(d) {
                           var avg = 0.0;
-                          if(averagetype == 1) {
+                          if(gl_averagetype == 1) {
                             avg = (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching))/4;
                           }
                           else {
@@ -36,7 +39,7 @@ function makeInstructorCircles(instructors,averagetype,exp) {
                          })
                          .on("mouseover", function() {
                            var d = d3.select(this)[0][0].__data__;
-                           if(averagetype == 1) {
+                           if(gl_averagetype == 1) {
                              var avg = (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching))/4;
                            }
                            else {
@@ -58,9 +61,25 @@ function makeInstructorCircles(instructors,averagetype,exp) {
 }
 
 
-function changeexponent(instructors,averagetype,exponent) {
+function changeorder(averagetype,exponent,order) {
+  gl_order = order;
   d3.select("svg").remove();
-  makeInstructorCircles(instructors,averagetype,exponent);
+  $.post('/changeorder',{
+    'order': gl_order
+  },function(result) {
+    makeInstructorCircles(result);
+  });
+}
+
+function changeexponent() {
+  d3.select("svg").remove();
+  console.log($("#exponent").val());
+  gl_exponent = parseInt($("#exponent").val());
+  $.post('/changeorder',{
+    'order': gl_order
+  },function(result) {
+    makeInstructorCircles(result);
+  });
 }
 function getcontent() {
   $.post('/instructor/content',{
