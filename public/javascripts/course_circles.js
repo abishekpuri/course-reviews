@@ -84,7 +84,6 @@ function limitCoursesize() {
 
 function changeCourseexponent() {
   d3.select("#course").remove();
-  console.log($("#courseExponent").val());
   gl_exponent = parseInt($("#courseExponent").val());
   $.post('/course/adjustinput',{
     'order': gl_order,
@@ -93,13 +92,16 @@ function changeCourseexponent() {
     makeCourseCircles(result);
   });
 }
-function getCoursecontent() {
-  console.log("Inside Course Content");
-  console.log("Using ID " + $("#courseId").text());
+function getCoursecontent(a="") {
+  val = 0;
+  if (a == "") {
+    val = parseInt($("#courseId").text());
+  } else {
+    val = a;
+  }
   $.post('/course/content',{
-    'id': parseInt($("#courseId").text())},
+    'id': val},
     function(result) {
-      console.log("The results are " + JSON.stringify(result));
       $("#courseContent").empty();
       if($("#courseBanner").length) {
           $("#courseBanner").empty();
@@ -171,4 +173,37 @@ function getCourseworkload() {
         "<br>"+result[i].commentworkload+"</li>");
       }
     });
+}
+
+function bycoursename() {
+  d3.select('#circlesCourse').selectAll('circle').attr('stroke-width','1px')
+  $.post('/course/byname', {
+    'subject': $('#courseInput').val().split(' ')[0],
+    'code': $('#courseInput').val().split(' ')[1]
+  },function(result) {
+    d = result;
+    if(gl_averagetype == 1) {
+      var avg = (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching))/4;
+    }
+    else {
+      avg = (10*4.066 + (parseFloat(d.content) + parseFloat(d.grading) + parseFloat(d.workload) + parseFloat(d.teaching)))/14
+    }
+    document.getElementById('courseName').innerHTML=d.subject + " "+ d.code +': <br>';
+    document.getElementById('courseId').innerHTML=d.courseid;
+    $('#id').hide();
+    document.getElementById('courseReviews').innerHTML=d.reviews+' Reviews';
+    document.getElementById('courseOtherInfo').innerHTML="Content: "+d.content+"<br> Grading: "+d.grading+"<br> Workload: "+d.workload+"<br> Teaching: "+d.teaching;
+    document.getElementById('courseOverall').innerHTML="Overall Average: "+avg.toPrecision(5);
+  })
+  position = 0;
+  position = d3.select('#circlesCourse').selectAll('circle')
+      .filter(function(d) {
+        data = $('#courseInput').val().split(' ');
+        return (d.subject == data[0] && d.code == data[1])})
+    .attr('stroke-width','10px')
+    .attr('cx') - 700
+getCoursecontent(JSON.stringify(d3.select('#circlesCourse').selectAll('circle')
+    .filter(function(d) { data = $('#courseInput').val().split(' ');
+    return (d.subject == data[0] && d.code == data[1])})[0][0].__data__.courseid));
+    $('#circlesCourse').animate( { scrollLeft: position }, 1000);
 }

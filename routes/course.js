@@ -58,4 +58,17 @@ router.post('/adjustinput', function(req, res, next) {
          });
 });
 
+router.post('/byname', function(req,res,next) {
+  db.one("select * from (select subject,code,courseid,round(avg(review.ratingcontent)::numeric,2) AS content," +
+  "round(avg(review.ratingteaching)::numeric,2) AS teaching,round(avg(review.ratinggrading)::numeric,2) AS grading," +
+  "round(avg(review.ratingworkload)::numeric,2) AS workload,count(review.reviewid) AS reviews " +
+  "from review,course where review.courseid = course.id group by subject,code,courseid) AS a " +
+  "where a.subject = $1 and a.code = $2",[req.body.subject,req.body.code])
+  .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send("ERROR: " + error);
+  })
+})
+
 module.exports = router;

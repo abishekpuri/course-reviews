@@ -180,7 +180,7 @@ function getworkload() {
 function byname() {
   d3.select('#circles').selectAll('circle').attr('stroke-width','1px')
   $.post('/instructor/byname', {
-    name: $('#nameinput').val()
+    'name': $('#nameinput').val()
   },function(result) {
     d = result;
     if(gl_averagetype == 1) {
